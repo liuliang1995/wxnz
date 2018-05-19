@@ -1,1 +1,333 @@
-xxxxxxxx
+<html>
+<head>
+    <meta http-equiv="Content-Security-Policy">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" charset="utf-8">
+
+    <script src="/static/h5/tb/jquery.min.js"></script>
+    <title>{$title}</title>
+</head>
+<body>
+<script type='text/javascript' src='/static/h5/tb/js/layer/layer.js'></script>
+<link rel="stylesheet" href="/static/h5/tb/js/layer/need/layer.css">
+<script>
+    //*****统计******
+    var _hmt = _hmt || [];
+    (function() {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?{$tongj['baiducnt']}";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+{if !empty($jumps)}
+<script>
+    //*****返回******
+    window.onhashchange = function () {
+        var rnd = Math.round(Math.random()*3);
+        if (rnd <= 1) {
+            //三年一线
+            window.location.href= "{$jumps['f']}";
+        } else {
+            window.location.href= "{$jumps['s']}";
+        }
+    };
+    function hh() {
+        history.pushState(history.length + 1, "message", "#" + new Date().getTime())
+    }
+    setTimeout('hh();', 100);
+</script>
+{/if}
+<style>
+    * {
+        padding: 0px;
+        margin: 0px;
+    }
+
+    body {
+        background-color: #f2f2f2;
+        color: #555555;
+        overflow-x: hidden;
+    }
+
+    .cover {
+        margin-bottom: 20px;
+    }
+
+    .cover h1 {
+        font-size: 18px;
+        color: #ff7241;
+        padding: 23px 0px 7px;
+        text-align: center;
+        font-weight: 600;
+    }
+
+    .cover img {
+        width: 90%;
+        margin-left: 5%;
+        margin-bottom: 10px;
+    }
+
+    input[type="text"] {
+        background-color: #FFFFFF;
+        border: 1px solid #d0d0d0;
+        padding: 2%;
+        font-size: 18px;
+        width: 86%;
+        margin: 10px 5%;
+        border-radius: 2px;
+    }
+
+    .cover p {
+        width: 90%;
+        margin: 0px 5%;
+    }
+
+    .cover label {
+        width: 35%;
+        padding: 5px 0px 5px 15%;
+        display: inline-block;
+    }
+
+    input[type="radio"] {
+        width: 18px;
+        height: 18px;
+        position: absolute;
+        margin: 0px -25px;
+    }
+
+    .btn {
+        border: 0;
+        color: #fff;
+        background: #ff7241;
+        font-size: 16px;
+        outline: none;
+        width: 90%;
+        padding: 8px 0px;
+        border-radius: 4px;
+        margin: 8px 5%;
+        appearance: none;
+        text-align: center;
+    }
+
+    .public_toast {
+        padding: 10px 15px;
+        border-radius: 3px;
+        background: rgba(0, 0, 0, 0.7);
+        position: fixed;
+        left: 50%;
+        top: 40%;
+        max-width: 100%;
+        z-index: 9999;
+        color: #FFF;
+        font-size: 18px;
+        opacity: 0;
+        -webkit-transform: translate3d(-50%, 100%, 0);
+        transition: all linear .1s;
+        white-space: nowrap;
+    }
+
+    .public_toast_show {
+        opacity: 1;
+    }
+
+    #cover_img {
+        width: 90%;
+        margin-left: 5%;
+        margin-bottom: 10px;
+    }
+</style>
+<div class="page"></div>
+<div class="cover">
+    <h1>{$title}</h1>
+    <img id="cover_img" src="/h5/yw_big.jpg" style="width: 352px; margin-left: 24px;">
+    <p class="sex">
+        <label for="boy"><input type="radio" id="boy" value="1" name="sex">我是男生</label><label for="girl"><input id="girl" type="radio" value="2" name="sex">我是女生</label>
+    </p>
+    <input type="text" name="name" id="name" placeholder="请输入名字">
+    <input type="hidden" name="aid" value="{$aid}">
+    <p id="showTooltips" class="btn">开始</p>
+</div>
+
+<script type="text/javascript">
+    $(function(){
+        $('#showTooltips').click(function(){
+            var aid  = $('input[name=aid]').val();
+            var name = $('input[name=name]').val();
+            var sex  =  $("input[name='sex']:checked").val();
+
+            if(name == '') {
+                layer.open({
+                    content: '请输入姓名',
+                    time: 2 //2秒后自动关闭
+                });
+                return;
+            }
+            if(sex == '' || sex==0) {
+                layer.open({
+                    content: '请选择性别',
+                    time: 2 //2秒后自动关闭
+                });
+                return;
+            }
+            var jzload=layer.open({type: 2});
+
+            $.ajax({
+                type:"POST",
+                url:"/h5/yw/getimg",
+                data:{name:name,sex:sex,aid:aid},
+                timeout:6000,
+                dataType: "json",
+                success:function (data) {
+                    if (data.status == 1) {
+                        $('form').hide();
+                        var html='<div class="bd" style="text-align: center;">';
+                        html+='<img src="'+data.uri+'" style="width: 94%;">';
+                        html+='</div>';
+
+                        html+='<div class="bd" style="font-size: 50px;text-align: center;color: #ffffff; background:#fff; width: 100%; position:absolute;  color: red;">长按图片保存 ↑↑</div>';
+                        $('.page').html(html);
+                        layer.close(jzload);
+                        $('.cover').hide();
+                        $(".page").css("top","0px");
+                        $(".page").css("margin-bottom","100px");
+                    }else if (data.status == '-1') {
+                        alert('请完善信息');
+                        layer.open({
+                            time: 2 //2秒后自动关闭
+                        });
+                    } else{
+                        layer.open({
+                            content: '生成失败,请重试',
+                            time: 2 //2秒后自动关闭
+                        });
+                    }
+                }
+            });
+        });
+    });
+</script>
+
+{if !empty($list)}
+<style>
+    .rec_holder li{
+        overflow: hidden;
+        border-top: 1px solid #ccc;
+        width: 90%;
+        margin: 0 auto;
+        text-align: left;
+        height: 90px;
+    }
+    .rec_holder li:last-child {
+        border-bottom: 1px solid #ccc;
+    }
+    .recommend_img{
+        height: 64px;
+        width: 85px;
+        margin-top: 11px;
+        display: inline-block;
+    }
+    .rec_holder .recommend_link p{
+        font-size:16px;
+        color:#000;
+        text-decoration:none;
+        display: inline-block;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        line-height: 22px;
+        vertical-align: top;
+        margin-top: 15px;
+        margin-right: 0;
+        height: 46px;
+        overflow: hidden;
+        width: 70%;
+        padding-right: 10px;
+    }
+    .recommend_div{
+        width: 70%;
+        padding-right: 10px;
+        display: inline-block;
+        vertical-align: top;
+    }
+    .recommend_div>span{
+        font-size: 12px;
+        line-height: 13px;
+        color: #aaa;
+        vertical-align: top;
+    }
+    .recommend_div>div{
+        color: black;
+        margin-bottom: 7px;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        line-height: 22px;
+        vertical-align: top;
+        margin-top: 15px;
+        margin-right: 0;
+        max-height: 45px;
+        overflow: hidden;
+        text-decoration:none;
+    }
+    li.recommend1 {
+        height: auto;
+        border: none !important;
+    }
+    li.recommend1.recommend1_first{
+        border-top: 1px solid #ccc!important;
+        margin-bottom: 8px;
+        line-height: 0;
+    }
+    .recommend1 img{
+        display: block;
+        height: auto;
+        width: 100%;
+    }
+    .rec_holder .recommend1 .recommend_link p{
+        padding: 0 15px;
+        height: 39px;
+        line-height: 39px;
+        margin-top: 0;
+        width: 100%;
+        margin-left: 0;
+    }
+    li.recommend4{
+        height: auto;
+        margin-bottom: 15px;
+    }
+    .rec_holder .recommend4 .recommend_link p{
+        display: block;
+        width: 100%;
+    }
+    .recommend4 .recommend_img{
+        margin-top: 0;
+        width: 32%;
+        margin-right: 1%;
+    }
+    .game a{display: block;}
+    .load{display: none}
+</style>
+
+<div class="rec_games" style="font-size: 1em; color: -webkit-link; margin: 0px auto; text-align: center; width: 97%; white-space: nowrap; line-height: 42px; min-height: 230px; border-bottom: none;">
+    <div class="rec_holder" style="clear:both;background:#fff;padding: 10px 0; ">
+        <ul id="recommend_game" style="margin-bottom: 0">
+            {foreach (list as $key=>$vo)}
+            <li class="game">
+                <a class="recommend_link" href="{$vo.push_url}">
+                    <div class="recommend_div"><div>{$vo.name2}</div>
+                        {if $vo.type == 0}
+                        <span >{$vo.hits}人在玩</span>
+                        {/if}
+                    </div>
+                    <img class="recommend_img" src="{$vo.imageurl}"></a>
+            </li>
+            {/foreach}
+        </ul>
+        {if $more}
+        <a href="{$more}" style="font-size:18px;line-height: 30px; background:#13866d;color: white; text-decoration:none;display: block;text-align: center;margin: 0 14px;border-radius: 3px">
+            更多免费游戏
+        </a>
+        {/if}
+    </div>
+</div>
+{/if}
+</body>
+</html>
