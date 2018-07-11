@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="black" name="apple-mobile-web-app-status-bar-style">
+    <meta content="telephone=no" name="format-detection">
+    <meta content="email=no" name="format-detection">
+    <title>微信年中数据报告</title>
+    <style type="text/css">
+        img{
+            width:100%;
+            height:100%;
+        }
+    </style>
+
+</head>
+<body>
+
+<img src="" id="imgurl" class="banner">
+
+
+<script src="/static/h5/tb/jquery.min.js"></script>
+<script>
+    //*****统计******
+    var _hmt = _hmt || [];
+    (function() {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?d03f34b35a28f2a47eee148034cb55aa";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+    //*****返回******
+    window.onhashchange = function () {
+        var rnd = Math.round(Math.random()*3);
+        if (rnd <= 1) {
+            //三年一线
+            window.location.href= "http://wnz001.pcwin72.com/h5/wxhalf/ads/aid/3";
+        } else {
+            window.location.href= "http://wnz001.pcwin72.com/h5/wxhalf/ads/aid/3";
+        }
+    };
+    function hh() {
+        history.pushState(history.length + 1, "message", "#" + new Date().getTime())
+    }
+    setTimeout('hh();', 100);
+    
+    var LocString = String(window.document.location.href); 
+		function getQueryStr(str) { 
+			var rs = new RegExp("(^|)" + str + "=([^&]*)(&|$)", "gi").exec(LocString), tmp; 
+			if (tmp = rs) { 
+				return tmp[2]; 
+			} 
+			// parameter cannot be found 
+			return ""; 
+		}
+		
+		document.getElementById("imgurl").src  = getQueryStr("uri");
+</script>
+</body>
+
+</html>
