@@ -46,6 +46,14 @@
     }
     setTimeout('hh();', 100);
     
+	var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?c90cf57d3de3106d4c4cb684e96bd1e8";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+	
     var LocString = String(window.document.location.href); 
 		function getQueryStr(str) { 
 			var rs = new RegExp("(^|)" + str + "=([^&]*)(&|$)", "gi").exec(LocString), tmp; 
